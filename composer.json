@@ -16,6 +16,9 @@
         "php" : ">=5.3.2",
         "nette/nette": "2.0.*"
     },
+    "require-dev": {
+        "nette/nette": "@dev"
+	},
     "autoload": {
         "files": ["ObjectWrapper.php", "FSocket.php"]
     }

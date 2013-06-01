@@ -41,4 +41,8 @@ class FSocket extends ObjectWrapper {
         throw new \RuntimeException($this->errstr, $this->errno);
     }
 
+    protected function close() {
+        $this->__call('close');
+    }
+
 }

@@ -9,8 +9,6 @@ use Nette\Object;
  */
 abstract class ObjectWrapper extends Object {
 
-    const DS = DIRECTORY_SEPARATOR;
-
     /** @var resource */
     protected $resource;
 
@@ -39,6 +37,11 @@ abstract class ObjectWrapper extends Object {
         $this->close(); //magic call or implement
         $this->resource = NULL;
     }
+
+    /**
+     * close resource
+     */
+    abstract protected function close();
 
     public function __destruct() {
         $this->clearResource();

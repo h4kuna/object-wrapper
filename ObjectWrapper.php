@@ -15,7 +15,7 @@ abstract class ObjectWrapper extends Object {
     /** @var string prefix of function */
     protected $prefix;
 
-    public function __call($name, $args) {
+    public function __call($name, $args = array()) {
         $fname = $this->prefix . $name;
         if (function_exists($fname)) {
             array_unshift($args, $this->resource);

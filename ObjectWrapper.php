@@ -24,10 +24,20 @@ abstract class ObjectWrapper extends Object {
         throw new \RuntimeException('Call undefined method ' . __CLASS__ . '::' . $name);
     }
 
+    /**
+     * Active resource of class
+     *
+     * @return Resource
+     */
     public function getResource() {
         return $this->resource;
     }
 
+    /**
+     * Safety clear resource
+     *
+     * @return void
+     */
     public function clearResource() {
         if (!is_resource($this->resource)) {
             $this->resource = NULL;

@@ -13,7 +13,8 @@ class CUrl extends ObjectWrapper {
     protected $prefix = 'curl_';
 
     /**
-     * inicializace curl
+     * Inicializace curl
+     *
      * @param string $url
      * @param array $options
      */
@@ -36,6 +37,13 @@ class CUrl extends ObjectWrapper {
         $this->setOptions($options);
     }
 
+    /**
+     * Magic setter
+     *
+     * @param string $name
+     * @param mixed $value
+     * @return mixed
+     */
     public function __set($name, $value) {
         $val = strtoupper($name);
         if (defined($val)) {
@@ -55,6 +63,12 @@ class CUrl extends ObjectWrapper {
         return parent::__set($name, $value);
     }
 
+    /**
+     * Magic getter
+     *
+     * @param mixed $name
+     * @return mixed
+     */
     public function &__get($name) {
         $val = strtoupper($name);
         if (defined(self::INFO . $val)) {
@@ -65,23 +79,37 @@ class CUrl extends ObjectWrapper {
     }
 
     /**
-     * vypise chybu
+     * Throw exception
+     *
      * @return void
      */
     public function getErrors() {
         throw new CUrlException($this->error(), $this->errno());
     }
 
-    public static function getVersion($age = \CURLVERSION_NOW) {
+    /**
+     * Curl version
+     *
+     * @param int $age
+     * @return string
+     */
+    public static function getVersion($age = CURLVERSION_NOW) {
         return curl_version($age);
     }
 
+    /**
+     * Set curl options
+     *
+     * @param array $opts
+     * @return bool
+     */
     public function setOptions(array $opts) {
         return curl_setopt_array($this->resource, $opts);
     }
 
     /**
-     * download content page
+     * Download content page
+     *
      * @param string $url
      * @return string
      * @throws CUrlException
@@ -101,6 +129,10 @@ class CUrl extends ObjectWrapper {
         return file_get_contents($url);
     }
 
+    /**
+     * Close connection
+     * @return void
+     */
     protected function close() {
         $this->__call('close');
     }

@@ -119,10 +119,11 @@ class CUrl extends ObjectWrapper {
     static function download($url) {
         try {
             $curl = new static($url);
-            if ($curl->errno() > 0) {
+            $content = $curl->exec();
+            if (!$curl->errno()) {
                 $curl->getErrors();
             }
-            return $curl->exec();
+            return $content;
         } catch (CUrlException $e) {
             if (!ini_get('allow_url_fopen')) {
                 throw new CUrlException('You need allow_url_fopen -on or curl extension');

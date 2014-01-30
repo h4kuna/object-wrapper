@@ -3,6 +3,7 @@
 namespace h4kuna;
 
 use Nette\Object;
+use RuntimeException;
 
 /**
  * @author Milan Matějček
@@ -15,13 +16,13 @@ abstract class ObjectWrapper extends Object {
     /** @var string prefix of function */
     protected $prefix;
 
-    public function __call($name, $args = array()) {
+    public function __call($name, array $args = array()) {
         $fname = $this->prefix . $name;
         if (function_exists($fname)) {
             array_unshift($args, $this->resource);
             return call_user_func_array($fname, $args);
         }
-        throw new \RuntimeException('Call undefined method ' . __CLASS__ . '::' . $name);
+        throw new RuntimeException('Call undefined method ' . get_called_class() . '::' . $name);
     }
 
     /**
@@ -49,7 +50,7 @@ abstract class ObjectWrapper extends Object {
     }
 
     /**
-     * close resource
+     * Close resource
      */
     abstract protected function close();
 

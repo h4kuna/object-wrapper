@@ -5,10 +5,18 @@ namespace h4kuna;
 use Nette\Object;
 use RuntimeException;
 
+interface IObjectWrapper {
+
+    /**
+     * Close opened resourcem called in __destructor
+     */
+    public function close();
+}
+
 /**
  * @author Milan Matějček
  */
-abstract class ObjectWrapper extends Object {
+abstract class ObjectWrapper extends Object implements IObjectWrapper {
 
     /** @var resource */
     protected $resource;
@@ -48,11 +56,6 @@ abstract class ObjectWrapper extends Object {
         $this->close(); //magic call or implement
         $this->resource = NULL;
     }
-
-    /**
-     * Close resource
-     */
-    abstract protected function close();
 
     public function __destruct() {
         $this->clearResource();

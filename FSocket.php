@@ -2,39 +2,29 @@
 
 namespace h4kuna;
 
+use RuntimeException;
+
 /**
  * Open Internet or Unix domain socket connection
  *
  * @author Milan Matějček
  */
-class FSocket extends ObjectWrapper {
+class FSocket extends File {
 
-    protected $prefix = 'f';
-    private $errno;
+    /** @var int */
+    private $errno = 0;
+
+    /** @var string */
     private $errstr;
 
     /**
      *
-     * @param string|NULL $hostname
+     * @param string $hostname
      * @param int $port
      * @param NULL|int $timeOut
      */
-    public function __construct($hostname = NULL, $port = -1, $timeOut = NULL) {
-        if ($hostname) {
-            $this->open($hostname, $port, $timeOut);
-        }
-    }
-
-    /**
-     * Open connection
-     *
-     * @param string $hostname
-     * @param int $port
-     * @param int $timeOut
-     * @return void
-     */
-    public function open($hostname, $port = -1, $timeOut = NULL) {
-        $this->resource = fsockopen($hostname, $port, $this->errno, $this->errstr, $timeOut);
+    public function __construct($hostname, $port = -1, $timeOut = NULL) {
+        $this->resource = @fsockopen($hostname, $port, $this->errno, $this->errstr, $timeOut);
         if (!$this->resource) {
             $this->exception();
         }
@@ -70,17 +60,10 @@ class FSocket extends ObjectWrapper {
     /**
      * Error as exception
      *
-     * @throws \RuntimeException
+     * @throws RuntimeException
      */
     protected function exception() {
-        throw new \RuntimeException($this->errstr, $this->errno);
-    }
-
-    /**
-     * Close connection
-     */
-    protected function close() {
-        $this->__call('close');
+        throw new RuntimeException($this->errstr, $this->errno);
     }
 
 }

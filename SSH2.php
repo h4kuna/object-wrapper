@@ -42,7 +42,7 @@ class SSH2 extends ObjectWrapper {
         return ssh2_fetch_stream($stream, $streamid);
     }
 
-    protected function close() {
+    public function close() {
         $this->resource = NULL;
     }
 

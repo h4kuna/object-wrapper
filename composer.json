@@ -17,6 +17,6 @@
         "nette/nette": "*"
     },
     "autoload": {
-        "classmap": ["./"]
+        "classmap": ["./", "./CUrl/"]
     }
 }

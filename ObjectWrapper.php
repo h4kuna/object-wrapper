@@ -24,7 +24,7 @@ abstract class ObjectWrapper extends Object implements IObjectWrapper {
     /** @var string prefix of function */
     protected $prefix;
 
-    public function __call($name, array $args = array()) {
+    public function __call($name, $args = array()) {
         $fname = $this->prefix . $name;
         if (function_exists($fname)) {
             array_unshift($args, $this->resource);

@@ -39,7 +39,7 @@ class CurlTest extends PHPUnit_Framework_TestCase {
         if (PHP_VERSION_ID >= 50500) {
             $this->assertSame(TRUE, $file instanceof \CURLFile);
         } else {
-            $this->assertSame(TRUE, '@' . __FILE__);
+            $this->assertSame(TRUE, '@' . __FILE__ == $file);
         }
     }
 

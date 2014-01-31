@@ -1,112 +1,33 @@
 <?php
 
-namespace h4kuna;
+namespace h4kuna\CUrl;
 
-use Nette\Utils\MimeTypeDetector;
+use Nette\StaticClassException;
 
 /**
- * @author Milan Matějček <milan.matejcek@gmail.com>
+ * @author Milan Matějček
  */
-class CUrl extends ObjectWrapper {
+class CurlBuilder {
 
-    const OPT = 'CURLOPT_';
-    const INFO = 'CURLINFO_';
-
-    protected $prefix = 'curl_';
+    public function __construct() {
+        throw new StaticClassException(__CLASS__);
+    }
 
     /**
-     * Inicializace curl
+     * Prepare Curl for download page
      *
      * @param string $url
-     * @param array $options
+     * @return CUrl
      */
-    public function __construct($url = FALSE, array $options = NULL) {
-
-        if (!extension_loaded('curl')) {
-            throw new CUrlException('Curl extension, does\'t loaded.');
-        }
-
-        $this->resource = $this->init();
-        if ($options === NULL) {
-            $options = array(CURLOPT_HEADER => FALSE, CURLOPT_RETURNTRANSFER => TRUE,
-                CURLOPT_SSL_VERIFYPEER => FALSE, CURLOPT_SSL_VERIFYHOST => FALSE);
-        }
-
-        if ($url !== FALSE) {
-            $options += array(CURLOPT_URL => $url);
-        }
-
-        $this->setOptions($options);
-    }
-
-    /**
-     * Magic setter
-     *
-     * @param string $name
-     * @param mixed $value
-     * @return mixed
-     */
-    public function __set($name, $value) {
-        $val = strtoupper($name);
-        if (defined($val)) {
-            return $this->setopt(constant($val), $value);
-        }
-
-        $const = self::OPT . $val;
-        if (defined($const)) {
-            return $this->setopt(constant($const), $value);
-        }
-
-        $const = self::INFO . $val;
-        if (defined($const)) {
-            return $this->setopt(constant($const), $value);
-        }
-
-        return parent::__set($name, $value);
-    }
-
-    /**
-     * Magic getter
-     *
-     * @param mixed $name
-     * @return mixed
-     */
-    public function &__get($name) {
-        $val = strtoupper($name);
-        if (defined(self::INFO . $val)) {
-            $a = $this->getInfo(constant(self::INFO . $val));
-            return $a;
-        }
-        return parent::__get($name);
-    }
-
-    /**
-     * Throw exception
-     *
-     * @return void
-     */
-    public function getErrors() {
-        throw new CUrlException($this->error(), $this->errno());
-    }
-
-    /**
-     * Curl version
-     *
-     * @param int $age
-     * @return string
-     */
-    public static function getVersion($age = CURLVERSION_NOW) {
-        return curl_version($age);
-    }
-
-    /**
-     * Set curl options
-     *
-     * @param array $opts
-     * @return bool
-     */
-    public function setOptions(array $opts) {
-        return curl_setopt_array($this->resource, $opts);
+    static function createDownload($url) {
+        $curl = new CUrl($url);
+        $curl->setOptions(array(
+            CURLOPT_HEADER => FALSE,
+            CURLOPT_RETURNTRANSFER => TRUE,
+            CURLOPT_SSL_VERIFYPEER => FALSE,
+            CURLOPT_SSL_VERIFYHOST => FALSE)
+        );
+        return $curl;
     }
 
     /**
@@ -118,11 +39,9 @@ class CUrl extends ObjectWrapper {
      */
     static function download($url) {
         try {
-            $curl = new static($url);
+            $curl = self::createDownload($url);
             $content = $curl->exec();
-            if (!$curl->errno()) {
-                $curl->getErrors();
-            }
+            $curl->throwException();
             return $content;
         } catch (CUrlException $e) {
             if (!ini_get('allow_url_fopen')) {
@@ -131,6 +50,11 @@ class CUrl extends ObjectWrapper {
         }
         return file_get_contents($url);
     }
+
+    /**
+     * EXPERIMENTAL METHODS ****************************************************
+     * *************************************************************************
+     */
 
     /**
      * @example
@@ -149,7 +73,8 @@ class CUrl extends ObjectWrapper {
     static function postUploadFile($url, array $content) {
         $eol = "\r\n";
         $boundary = md5(microtime(TRUE));
-        $curl = new static($url, array(
+        $curl = new CUrl($url);
+        $curl->setOptions(array(
             CURLOPT_SSL_VERIFYPEER => false,
             CURLOPT_SSL_VERIFYHOST => 1,
             CURLOPT_RETURNTRANSFER => 1,
@@ -192,21 +117,5 @@ class CUrl extends ObjectWrapper {
         $curl->setopt(CURLOPT_POSTFIELDS, $body);
         return $curl;
     }
-
-    /**
-     * Close connection
-     * @return void
-     */
-    protected function close() {
-        $this->__call('close');
-    }
-
-}
-
-/**
- *
- * @author Milan Matějček
- */
-class CUrlException extends \RuntimeException {
 
 }

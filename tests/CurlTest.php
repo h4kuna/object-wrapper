@@ -32,6 +32,17 @@ class CurlTest extends PHPUnit_Framework_TestCase {
         $this->assertEquals(file_get_contents(__DIR__ . '/testCurlMulti.txt'), serialize($multi->getSelect()));
     }
 
+    public function testCreateFile() {
+        $curl = new CUrl(self::TEST_URL_95);
+        $file = $curl->fileCreate(__FILE__);
+
+        if (PHP_VERSION_ID >= 50500) {
+            $this->assertSame(TRUE, $file instanceof \CURLFile);
+        } else {
+            $this->assertSame(TRUE, '@' . __FILE__);
+        }
+    }
+
     public function _testCurlShare() {
         // je funkční ale jestli pracuje správně???
         $a = new CUrl('http://example.com/');

@@ -131,14 +131,18 @@ class CUrl extends ObjectWrapper {
     }
 
     /**
-     * PHP 5 >= 5.5.0
+     * Prepare file for send
      *
      * @param string $filename
      * @param string $mimetype
      * @param string $postname
-     * @return \CURLFile
+     * @return \CURLFile|string
      */
     public function fileCreate($filename, $mimetype = NULL, $postname = NULL) {
+        if (PHP_VERSION_ID < 50500) {
+            return '@' . $filename;
+        }
+
         if ($mimetype === NULL) {
             $mimetype = MimeTypeDetector::fromFile($filename);
         }

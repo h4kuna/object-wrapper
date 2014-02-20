@@ -2,10 +2,11 @@
 
 namespace h4kuna;
 
+use Iterator;
 use RuntimeException;
 
 /**
- * This class is alias for SplFileObject
+ * This class is alias for SplFileObject, but I can read 1GB file with this class
  *
  * @author Milan Matějček
  *
@@ -17,18 +18,21 @@ use RuntimeException;
  * @method string getss(int $length, string $allowable_tags)
  * @method int passthru()
  * @method int putcsv(array $fields, string $delimiter = ',', string $enclosure = '"')
- * @method int seek(int $offset, int $whence = SEEL_SET)
+ * @method int seek(int $offset, int $whence = SEEK_SET)
  * @method array stat()
  * @method int tell()
  * @method bool truncate(int $size)
  * @method int write(string $string, int $length = 0)
  */
-class File extends ObjectWrapper {
+class File extends ObjectWrapper implements Iterator {
 
     protected $prefix = 'f';
 
     /** @var string */
     private $fileName;
+
+    /** @var int */
+    private $lineNumber;
 
     /**
      *
@@ -79,6 +83,30 @@ class File extends ObjectWrapper {
      */
     public function close() {
         return fclose($this->resource);
+    }
+
+    /** @return string */
+    public function current() {
+        return fgets($this->resource);
+    }
+
+    /** @return int */
+    public function key() {
+        return $this->lineNumber;
+    }
+
+    public function next() {
+        ++$this->lineNumber;
+    }
+
+    public function rewind() {
+        fseek($this->resource, 0);
+        $this->lineNumber = 1;
+    }
+
+    /** @return bool */
+    public function valid() {
+        return !feof($this->resource);
     }
 
 }

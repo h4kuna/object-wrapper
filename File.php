@@ -4,6 +4,7 @@ namespace h4kuna;
 
 use Iterator;
 use RuntimeException;
+use SplFileInfo;
 
 /**
  * This class is alias for SplFileObject, but I can read 1GB file with this class
@@ -34,6 +35,9 @@ class File extends ObjectWrapper implements Iterator {
     /** @var int */
     private $lineNumber;
 
+    /** @var SplFileInfo */
+    private $fileInfo;
+
     /**
      *
      * @param string $fileName
@@ -63,6 +67,14 @@ class File extends ObjectWrapper implements Iterator {
      */
     public function lock($operation, &$wouldLock = NULL) {
         return flock($this->resource, $operation, $wouldLock);
+    }
+
+    /** @return SplFileInfo */
+    public function getFileInfo() {
+        if ($this->fileInfo === NULL) {
+            $this->fileInfo = new SplFileInfo($this->fileName);
+        }
+        return $this->fileInfo;
     }
 
     /**

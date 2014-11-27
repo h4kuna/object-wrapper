@@ -37,6 +37,9 @@ class File extends ObjectWrapper implements Iterator {
 
     /** @var SplFileInfo */
     private $fileInfo;
+    
+    /** @var string */
+    private $current;
 
     /**
      *
@@ -99,7 +102,7 @@ class File extends ObjectWrapper implements Iterator {
 
     /** @return string */
     public function current() {
-        return fgets($this->resource);
+        return $this->current;
     }
 
     /** @return int */
@@ -118,6 +121,7 @@ class File extends ObjectWrapper implements Iterator {
 
     /** @return bool */
     public function valid() {
+        $this->current = fgets($this->resource);
         return !feof($this->resource);
     }
 

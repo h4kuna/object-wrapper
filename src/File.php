@@ -25,7 +25,8 @@ use SplFileInfo;
  * @method bool truncate(int $size)
  * @method int write(string $string, int $length = 0)
  */
-class File extends ObjectWrapper implements Iterator {
+class File extends ObjectWrapper implements Iterator
+{
 
     protected $prefix = 'f';
 
@@ -45,7 +46,8 @@ class File extends ObjectWrapper implements Iterator {
      * @param mixed $useIncludePath
      * @param mixed $context
      */
-    public function __construct($fileName, $mode = 'r', $useIncludePath = FALSE, $context = NULL) {
+    public function __construct($fileName, $mode = 'r', $useIncludePath = FALSE, $context = NULL)
+    {
         $this->fileName = $fileName;
 
         if ($context) {
@@ -65,12 +67,14 @@ class File extends ObjectWrapper implements Iterator {
      * @param int $wouldLock
      * @return bool
      */
-    public function lock($operation, &$wouldLock = NULL) {
+    public function lock($operation, &$wouldLock = NULL)
+    {
         return flock($this->resource, $operation, $wouldLock);
     }
 
     /** @return SplFileInfo */
-    public function getFileInfo() {
+    public function getFileInfo()
+    {
         if ($this->fileInfo === NULL) {
             $this->fileInfo = new SplFileInfo($this->fileName);
         }
@@ -82,7 +86,8 @@ class File extends ObjectWrapper implements Iterator {
      * @param int $length
      * @return string
      */
-    public function read($length = 0) {
+    public function read($length = 0)
+    {
         if ($length === 0) {
             $length = filesize($this->fileName);
         }
@@ -93,31 +98,37 @@ class File extends ObjectWrapper implements Iterator {
      * Close resourse
      * @return bool
      */
-    public function close() {
+    public function close()
+    {
         return fclose($this->resource);
     }
 
     /** @return string */
-    public function current() {
+    public function current()
+    {
         return fgets($this->resource);
     }
 
     /** @return int */
-    public function key() {
+    public function key()
+    {
         return $this->lineNumber;
     }
 
-    public function next() {
+    public function next()
+    {
         ++$this->lineNumber;
     }
 
-    public function rewind() {
+    public function rewind()
+    {
         fseek($this->resource, 0);
         $this->lineNumber = 1;
     }
 
     /** @return bool */
-    public function valid() {
+    public function valid()
+    {
         return !feof($this->resource);
     }
 

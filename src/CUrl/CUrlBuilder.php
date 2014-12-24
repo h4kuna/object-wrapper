@@ -2,15 +2,15 @@
 
 namespace h4kuna\CUrl;
 
-use Nette\StaticClassException;
-
 /**
  * @author Milan Matějček
  */
-class CurlBuilder {
+class CUrlBuilder
+{
 
-    public function __construct() {
-        throw new StaticClassException(__CLASS__);
+    private function __construct()
+    {
+        
     }
 
     /**
@@ -19,7 +19,8 @@ class CurlBuilder {
      * @param string $url
      * @return CUrl
      */
-    static function createDownload($url) {
+    static function createDownload($url)
+    {
         $curl = new CUrl($url);
         $curl->setOptions(array(
             CURLOPT_HEADER => FALSE,
@@ -37,7 +38,8 @@ class CurlBuilder {
      * @return string
      * @throws CUrlException
      */
-    static function download($url) {
+    static function download($url)
+    {
         try {
             $curl = self::createDownload($url);
             $content = $curl->exec();
@@ -70,7 +72,8 @@ class CurlBuilder {
      * @param array $content
      * @return CUrl - call ->exec()
      */
-    static function postUploadFile($url, array $content) {
+    static function postUploadFile($url, array $content)
+    {
         $eol = "\r\n";
         $boundary = md5(microtime(TRUE));
         $curl = new CUrl($url);

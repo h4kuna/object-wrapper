@@ -10,7 +10,8 @@ use h4kuna\ObjectWrapper;
  * @method bool setOpt(int $option, mixed $value)
  * @method string strerror() PHP 5 >= 5.5.0
  */
-class CurlMulti extends ObjectWrapper {
+class CUrlMulti extends ObjectWrapper
+{
 
     protected $prefix = 'curl_multi_';
 
@@ -20,7 +21,8 @@ class CurlMulti extends ObjectWrapper {
     /** @var array */
     private $content = array();
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->resource = curl_multi_init();
     }
 
@@ -29,7 +31,8 @@ class CurlMulti extends ObjectWrapper {
      * @param Curl $curl
      * @return void
      */
-    public function removeHandles() {
+    public function removeHandles()
+    {
         foreach ($this->handles as $curl) {
             $code = curl_multi_remove_handle($this->resource, $curl);
             $this->exception($code);
@@ -43,7 +46,8 @@ class CurlMulti extends ObjectWrapper {
      * @param string $name
      * @return int
      */
-    public function addHandle(CUrl $curl, $name = NULL) {
+    public function addHandle(CUrl $curl, $name = NULL)
+    {
         if ($name === NULL) {
             $name = $curl->getInfo('url');
         }
@@ -56,7 +60,8 @@ class CurlMulti extends ObjectWrapper {
      * @param array $args or list of Curl
      * @return void
      */
-    public function addHandles($args /* , ... */) {
+    public function addHandles($args /* , ... */)
+    {
         foreach (func_get_args() as $val) {
             $name = NULL;
             if (is_array($val)) {
@@ -66,7 +71,8 @@ class CurlMulti extends ObjectWrapper {
         }
     }
 
-    private function exception($code) {
+    private function exception($code)
+    {
         if ($code) {
             $message = PHP_VERSION_ID >= 50500 ? $this->strerror() : "Error code: $code";
             throw new CUrlException($message);
@@ -77,7 +83,8 @@ class CurlMulti extends ObjectWrapper {
     /**
      * @return bool
      */
-    public function exec() {
+    public function exec()
+    {
         $this->content = array();
         $active = NULL;
         do {
@@ -100,7 +107,8 @@ class CurlMulti extends ObjectWrapper {
      * @param bool|string $join
      * @return array
      */
-    public function getSelect($join = FALSE) {
+    public function getSelect($join = FALSE)
+    {
         if ($this->content) {
             return $this->content;
         }
@@ -118,7 +126,8 @@ class CurlMulti extends ObjectWrapper {
         return implode($join, $this->content);
     }
 
-    public function close() {
+    public function close()
+    {
         $this->removeHandles();
         return curl_multi_close($this->resource);
     }

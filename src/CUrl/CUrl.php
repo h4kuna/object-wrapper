@@ -3,7 +3,6 @@
 namespace h4kuna\CUrl;
 
 use h4kuna\ObjectWrapper;
-use Nette\Utils\MimeTypeDetector;
 
 /**
  * @author Milan Matějček <milan.matejcek@gmail.com>
@@ -18,7 +17,8 @@ use Nette\Utils\MimeTypeDetector;
  * @method string unescape(string $str) PHP 5 >= 5.5.0
  *
  */
-class CUrl extends ObjectWrapper {
+class CUrl extends ObjectWrapper
+{
 
     const OPT = 'CURLOPT_';
     const INFO = 'CURLINFO_';
@@ -34,7 +34,8 @@ class CUrl extends ObjectWrapper {
      * @param string $url
      * @param array $options
      */
-    public function __construct($url = NULL) {
+    public function __construct($url = NULL)
+    {
         if (!extension_loaded('curl')) {
             throw new CUrlException('Curl extension, does\'t loaded.');
         }
@@ -49,7 +50,8 @@ class CUrl extends ObjectWrapper {
      * @param mixed $value
      * @return mixed
      */
-    public function __set($name, $value) {
+    public function __set($name, $value)
+    {
         $val = strtoupper($name);
         if (defined($val)) {
             return $this->setopt(constant($val), $value);
@@ -74,7 +76,8 @@ class CUrl extends ObjectWrapper {
      * @param mixed $name
      * @return mixed
      */
-    public function &__get($name) {
+    public function &__get($name)
+    {
         $val = strtoupper($name);
         if (defined(self::INFO . $val)) {
             $a = $this->getInfo(constant(self::INFO . $val));
@@ -84,7 +87,8 @@ class CUrl extends ObjectWrapper {
     }
 
     /** @return void */
-    public function close() {
+    public function close()
+    {
         $this->shareClose();
         return curl_close($this->resource);
     }
@@ -94,7 +98,8 @@ class CUrl extends ObjectWrapper {
      *
      * @return void
      */
-    public function throwException() {
+    public function throwException()
+    {
         if ($this->errno()) {
             throw new CUrlException($this->error(), $this->errno());
         }
@@ -110,7 +115,8 @@ class CUrl extends ObjectWrapper {
      * @param int|string|NULL $opt
      * @return array|string|int
      */
-    public function getInfo($opt = NULL) {
+    public function getInfo($opt = NULL)
+    {
         if (is_int($opt)) {
             return curl_getinfo($this->resource, $opt);
         }
@@ -126,7 +132,8 @@ class CUrl extends ObjectWrapper {
      *
      * @return resource
      */
-    public function copyHandle() {
+    public function copyHandle()
+    {
         return curl_copy_handle($this->resource);
     }
 
@@ -138,13 +145,17 @@ class CUrl extends ObjectWrapper {
      * @param string $postname
      * @return \CURLFile|string
      */
-    public function fileCreate($filename, $mimetype = NULL, $postname = NULL) {
+    public function fileCreate($filename, $mimetype = NULL, $postname = NULL)
+    {
         if (PHP_VERSION_ID < 50500) {
             return '@' . $filename;
         }
 
         if ($mimetype === NULL) {
-            $mimetype = MimeTypeDetector::fromFile($filename);
+            $mimetype = finfo_file(finfo_open(FILEINFO_MIME_TYPE), $file);
+            if (strpos($mimetype, '/') === FALSE) {
+                throw new CUrlException('Let\' define mimetype, automatic detection faild.');
+            }
         }
 
         if ($postname === NULL) {
@@ -160,7 +171,8 @@ class CUrl extends ObjectWrapper {
      * @param int $age
      * @return string
      */
-    public static function getVersion($age = CURLVERSION_NOW) {
+    public static function getVersion($age = CURLVERSION_NOW)
+    {
         return curl_version($age);
     }
 
@@ -170,7 +182,8 @@ class CUrl extends ObjectWrapper {
      * @param array $opts
      * @return bool
      */
-    public function setOptions(array $opts) {
+    public function setOptions(array $opts)
+    {
         return curl_setopt_array($this->resource, $opts);
     }
 
@@ -182,7 +195,8 @@ class CUrl extends ObjectWrapper {
     /**
      * @return CurlShare
      */
-    public function getShare() {
+    public function getShare()
+    {
         if (self::$share === NULL) {
             self::$share = new CurlShare;
         }
@@ -194,7 +208,8 @@ class CUrl extends ObjectWrapper {
      *
      * @return void
      */
-    public function shareClose() {
+    public function shareClose()
+    {
         if (self::$share !== NULL) {
             self::$share->close();
             self::$share = NULL;
@@ -207,7 +222,8 @@ class CUrl extends ObjectWrapper {
      * @param string $value
      * @return CUrl
      */
-    public function shareOption($option, $value) {
+    public function shareOption($option, $value)
+    {
         $this->getShare()->setopt($option, $value);
         return $this;
     }
@@ -217,7 +233,8 @@ class CUrl extends ObjectWrapper {
      *
      * @return bool
      */
-    public function enableShare(CurlShare $share = NULL) {
+    public function enableShare(CurlShare $share = NULL)
+    {
         if ($share === NULL) {
             $share = $this->getShare();
         }

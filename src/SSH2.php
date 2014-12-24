@@ -11,11 +11,13 @@ namespace h4kuna;
  * $ssh->auth_password('username', 'password'); // call ssh2_auth_password($resource, $username, $passwords)
  * echo $ssh->cli('ls');
  */
-class SSH2 extends ObjectWrapper {
+class SSH2 extends ObjectWrapper
+{
 
     protected $prefix = 'ssh2_';
 
-    public function __construct($host, $port = 22, array $methods = NULL, array $callbacs = NULL) {
+    public function __construct($host, $port = 22, array $methods = NULL, array $callbacs = NULL)
+    {
         $this->resource = ssh2_connect($host, $port, $methods, $callbacs);
     }
 
@@ -25,7 +27,8 @@ class SSH2 extends ObjectWrapper {
      * @param string $command
      * @return string
      */
-    public function cli($command) {
+    public function cli($command)
+    {
         $s = $this->exec($command);
         stream_set_blocking($s, true);
         return stream_get_contents($s);
@@ -38,11 +41,13 @@ class SSH2 extends ObjectWrapper {
      * @param int $streamid
      * @return stream
      */
-    public function fetch_stream($stream, $streamid = SSH2_STREAM_STDERR) {
+    public function fetch_stream($stream, $streamid = SSH2_STREAM_STDERR)
+    {
         return ssh2_fetch_stream($stream, $streamid);
     }
 
-    public function close() {
+    public function close()
+    {
         $this->resource = NULL;
     }
 

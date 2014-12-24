@@ -9,7 +9,8 @@ use RuntimeException;
  *
  * @author Milan Matějček
  */
-class FSocket extends File {
+class FSocket extends File
+{
 
     /** @var int */
     private $errno = 0;
@@ -23,7 +24,8 @@ class FSocket extends File {
      * @param int $port
      * @param NULL|int $timeOut
      */
-    public function __construct($hostname, $port = -1, $timeOut = NULL) {
+    public function __construct($hostname, $port = -1, $timeOut = NULL)
+    {
         $this->resource = @fsockopen($hostname, $port, $this->errno, $this->errstr, $timeOut);
         if (!$this->resource) {
             $this->exception();
@@ -35,7 +37,8 @@ class FSocket extends File {
      *
      * @return string
      */
-    public function getErrstr() {
+    public function getErrstr()
+    {
         return $this->errstr;
     }
 
@@ -44,7 +47,8 @@ class FSocket extends File {
      *
      * @return int
      */
-    public function getErrno() {
+    public function getErrno()
+    {
         return $this->errno;
     }
 
@@ -53,7 +57,8 @@ class FSocket extends File {
      *
      * @return string
      */
-    public function getError() {
+    public function getError()
+    {
         return "#{$this->errno}, " . $this->errstr;
     }
 
@@ -62,7 +67,8 @@ class FSocket extends File {
      *
      * @throws RuntimeException
      */
-    protected function exception() {
+    protected function exception()
+    {
         throw new RuntimeException($this->errstr, $this->errno);
     }
 

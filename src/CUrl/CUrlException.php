@@ -8,6 +8,7 @@ use RuntimeException;
  *
  * @author Milan Matějček
  */
-class CUrlException extends RuntimeException {
-
+class CUrlException extends RuntimeException
+{
+    
 }

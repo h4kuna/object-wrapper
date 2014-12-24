@@ -9,16 +9,19 @@ use h4kuna\ObjectWrapper;
  *
  * @method bool setopt(int $option, string $value)
  */
-class CurlShare extends ObjectWrapper {
+class CUrlShare extends ObjectWrapper
+{
 
     protected $prefix = 'curl_share_';
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->resource = curl_share_init();
         curl_share_setopt($this->resource, CURLSHOPT_SHARE, CURL_LOCK_DATA_COOKIE);
     }
 
-    public function close() {
+    public function close()
+    {
         return curl_share_close($this->resource);
     }
 

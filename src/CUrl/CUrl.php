@@ -152,7 +152,7 @@ class CUrl extends ObjectWrapper
         }
 
         if ($mimetype === NULL) {
-            $mimetype = finfo_file(finfo_open(FILEINFO_MIME_TYPE), $file);
+            $mimetype = finfo_file(finfo_open(FILEINFO_MIME_TYPE), $filename);
             if (strpos($mimetype, '/') === FALSE) {
                 throw new CUrlException('Let\' define mimetype, automatic detection faild.');
             }

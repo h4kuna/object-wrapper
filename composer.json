@@ -13,7 +13,7 @@
         }
     ],
     "require": {
-        "nette/utils": "~2.2"
+        "nette/utils": "~2.0"
     },
     "autoload": {
         "psr-4": {
